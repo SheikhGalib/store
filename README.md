@@ -1,5 +1,7 @@
 # Student Management System
 
+[![CI/CD Pipeline](https://github.com/YOUR_USERNAME/store/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/store/actions/workflows/ci.yml)
+
 A comprehensive Student Management System built with Spring Boot, Spring Security, PostgreSQL, and Thymeleaf.
 
 ## Features
@@ -285,12 +287,34 @@ Access the application and test with the default users:
 | Teacher | teacher1 | teacher123 |
 | Student | student1 | student123 |
 
+## CI/CD Pipeline
+
+This project includes a GitHub Actions CI/CD pipeline that:
+
+- ✅ Builds and compiles the project
+- ✅ Runs all 99 unit and integration tests
+- ✅ Performs code quality checks
+- ✅ Scans for security vulnerabilities
+- ✅ Creates JAR artifacts (on main branch)
+- ✅ Builds Docker images (on main branch)
+
+### Pipeline Status
+
+The CI pipeline runs automatically on:
+- Every push to `main`, `master`, or `develop` branches
+- Every pull request to these branches
+
+### Branch Protection
+
+For production deployments, configure branch protection rules. See `docs/GITHUB_PROTECTION_RULES.md` for a complete guide.
+
 ## Documentation
 
 For detailed project documentation, see:
 
 - `docs/PROJECT_REPORT.md` - Comprehensive project report with MVC workflow
 - `docs/RUN_INSTRUCTIONS.md` - Detailed setup instructions
+- `docs/GITHUB_PROTECTION_RULES.md` - GitHub branch protection setup guide
 - `QUICKSTART.md` - Quick start guide
 
 ## License
