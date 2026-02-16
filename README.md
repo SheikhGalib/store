@@ -1,6 +1,6 @@
 # Student Management System
 A comprehensive Student Management System built with Spring Boot, Spring Security, PostgreSQL, and Thymeleaf.
-
+CI/CD added
 ## Features
 
 ### Authentication & Authorization
