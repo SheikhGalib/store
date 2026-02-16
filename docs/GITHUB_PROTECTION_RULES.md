@@ -1,5 +1,8 @@
 # 🔒 GitHub Branch Protection Rules Guide
 
+> ✅ **Protection Status:** Active on `main` branch  
+> 📅 **Last Verified:** February 17, 2026
+
 This guide explains how to set up branch protection rules to protect your production branches and enforce code quality.
 
 ## 📋 Table of Contents
