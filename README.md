@@ -1,6 +1,6 @@
 # Student Management System
 
-[![CI/CD Pipeline](https://github.com/YOUR_USERNAME/store/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/store/actions/workflows/ci.yml)
+
 
 A comprehensive Student Management System built with Spring Boot, Spring Security, PostgreSQL, and Thymeleaf.
 
