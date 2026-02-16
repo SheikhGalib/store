@@ -2016,6 +2016,190 @@ public class SecurityConfig {
 
 ---
 
+## 🧪 Testing
+
+This project includes comprehensive unit tests and integration tests to ensure code quality and functionality.
+
+### Test Structure
+
+```
+src/test/java/com/sheikhgalib/store/
+│
+├── StoreApplicationTests.java                # Application context test
+│
+├── entity/                                   # Entity Unit Tests
+│   ├── StudentTest.java                      # Student entity tests
+│   └── UserTest.java                         # User entity tests
+│
+├── service/                                  # Service Layer Unit Tests
+│   ├── StudentServiceTest.java               # Student service tests
+│   ├── TeacherServiceTest.java               # Teacher service tests
+│   ├── DepartmentServiceTest.java            # Department service tests
+│   └── CourseServiceTest.java                # Course service tests
+│
+├── controller/                               # Controller Unit Tests
+│   ├── StudentControllerTest.java            # Student controller tests
+│   └── AuthControllerTest.java               # Auth controller tests
+│
+├── repository/                               # Repository Tests
+│   └── StudentRepositoryTest.java            # JPA repository tests
+│
+├── security/                                 # Security Tests
+│   └── CustomUserDetailsServiceTest.java     # User details service tests
+│
+└── integration/                              # Integration Tests
+    ├── StudentControllerIntegrationTest.java # Full MVC integration tests
+    ├── AuthControllerIntegrationTest.java    # Auth integration tests
+    └── StudentServiceIntegrationTest.java    # Service layer integration
+```
+
+### Test Types
+
+#### 1. **Unit Tests** (Isolated component testing)
+- Use Mockito to mock dependencies
+- Test individual methods in isolation
+- Fast execution (no database required)
+
+**Example - StudentServiceTest.java:**
+```java
+@ExtendWith(MockitoExtension.class)
+class StudentServiceTest {
+    @Mock
+    private StudentRepository studentRepository;
+    
+    @InjectMocks
+    private StudentService studentService;
+    
+    @Test
+    void getAllStudents_ReturnsAllStudents() {
+        when(studentRepository.findAll()).thenReturn(Arrays.asList(student1, student2));
+        List<Student> result = studentService.getAllStudents();
+        assertEquals(2, result.size());
+        verify(studentRepository, times(1)).findAll();
+    }
+}
+```
+
+#### 2. **Integration Tests** (Full stack testing)
+- Uses H2 in-memory database
+- Tests real Spring context
+- Verifies component interaction
+
+**Example - StudentControllerIntegrationTest.java:**
+```java
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
+class StudentControllerIntegrationTest {
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @Test
+    @WithMockUser(roles = "TEACHER")
+    void createStudent_ValidData_CreatesStudent() throws Exception {
+        mockMvc.perform(post("/student/create")
+                .with(csrf())
+                .param("firstName", "New")
+                .param("lastName", "Student")
+                .param("email", "new@test.com"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/student/list"));
+    }
+}
+```
+
+#### 3. **Repository Tests** (Database layer testing)
+- Uses `@DataJpaTest` annotation
+- Tests JPA repository methods
+- Verifies database operations
+
+### Test Summary
+
+| Test Class | Tests | Category |
+|------------|-------|----------|
+| StudentServiceTest | 8 | Unit Test |
+| TeacherServiceTest | 8 | Unit Test |
+| DepartmentServiceTest | 7 | Unit Test |
+| CourseServiceTest | 9 | Unit Test |
+| StudentControllerTest | 9 | Unit Test |
+| AuthControllerTest | 9 | Unit Test |
+| CustomUserDetailsServiceTest | 4 | Unit Test |
+| StudentTest | 3 | Entity Test |
+| UserTest | 5 | Entity Test |
+| StudentRepositoryTest | 7 | Repository Test |
+| StudentControllerIntegrationTest | 13 | Integration Test |
+| AuthControllerIntegrationTest | 11 | Integration Test |
+| StudentServiceIntegrationTest | 5 | Integration Test |
+| StoreApplicationTests | 1 | Context Test |
+| **Total** | **99** | |
+
+### Running Tests
+
+```bash
+# Run all tests
+./mvnw test
+
+# Run specific test class
+./mvnw test -Dtest=StudentServiceTest
+
+# Run with verbose output
+./mvnw test -Dsurefire.useFile=false
+
+# Skip tests during build
+./mvnw package -DskipTests
+```
+
+### Test Configuration
+
+**src/test/resources/application.properties:**
+```properties
+# H2 In-Memory Database for Testing
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+spring.datasource.username=sa
+spring.datasource.password=
+spring.datasource.driver-class-name=org.h2.Driver
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+```
+
+### Key Testing Annotations
+
+| Annotation | Purpose |
+|------------|---------|
+| `@SpringBootTest` | Loads full application context |
+| `@AutoConfigureMockMvc` | Auto-configure MockMvc for testing |
+| `@ExtendWith(MockitoExtension.class)` | Enable Mockito in JUnit 5 |
+| `@Mock` | Create mock object |
+| `@InjectMocks` | Inject mocks into test subject |
+| `@WithMockUser` | Simulate authenticated user |
+| `@Transactional` | Rollback database after each test |
+| `@DataJpaTest` | Test JPA repositories only |
+| `@ActiveProfiles("test")` | Use test profile |
+
+### Security Testing
+
+Tests verify role-based access control:
+
+```java
+// Student can view but not modify
+@Test
+@WithMockUser(roles = "STUDENT")
+void deleteStudent_Student_DeniesAccess() throws Exception {
+    mockMvc.perform(get("/student/delete/1"))
+        .andExpect(status().isForbidden());
+}
+
+// Teacher can create students
+@Test
+@WithMockUser(roles = "TEACHER")
+void createStudentForm_Teacher_ShowsForm() throws Exception {
+    mockMvc.perform(get("/student/create"))
+        .andExpect(status().isOk());
+}
+```
+
+---
+
 ## 📝 Summary
 
 This Student Management System demonstrates:

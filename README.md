@@ -229,7 +229,69 @@ To add more features:
 
 ## Testing
 
-Access the application and test with the default users provided above.
+This project includes comprehensive unit tests and integration tests.
+
+### Running Tests
+
+```bash
+# Run all tests
+./mvnw test
+
+# Run specific test class
+./mvnw test -Dtest=StudentServiceTest
+
+# Run only unit tests
+./mvnw test -Dtest="*ServiceTest,*ControllerTest"
+
+# Run only integration tests
+./mvnw test -Dtest="*IntegrationTest"
+
+# Skip tests during build
+./mvnw package -DskipTests
+```
+
+### Test Categories
+
+| Category | Description | Example |
+|----------|-------------|---------|
+| **Unit Tests** | Test individual components in isolation using Mockito | `StudentServiceTest` |
+| **Integration Tests** | Test full Spring context with H2 database | `StudentControllerIntegrationTest` |
+| **Repository Tests** | Test JPA repository methods | `StudentRepositoryTest` |
+| **Security Tests** | Test role-based access control | Tests with `@WithMockUser` |
+
+### Test Coverage
+
+- **Service Layer**: 100% coverage with 32 unit tests
+- **Controller Layer**: Full endpoint coverage with security tests
+- **Repository Layer**: Custom query method testing
+- **Entity Layer**: Getter/setter and relationship tests
+
+### Test Configuration
+
+Tests use H2 in-memory database configured in `src/test/resources/application.properties`:
+
+```properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.jpa.hibernate.ddl-auto=create-drop
+```
+
+### Manual Testing
+
+Access the application and test with the default users:
+
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | admin | admin123 |
+| Teacher | teacher1 | teacher123 |
+| Student | student1 | student123 |
+
+## Documentation
+
+For detailed project documentation, see:
+
+- `docs/PROJECT_REPORT.md` - Comprehensive project report with MVC workflow
+- `docs/RUN_INSTRUCTIONS.md` - Detailed setup instructions
+- `QUICKSTART.md` - Quick start guide
 
 ## License
 
