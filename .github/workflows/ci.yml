@@ -107,8 +107,14 @@ jobs:
           cache: maven
 
       - name: OWASP Dependency Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
-          mvn org.owasp:dependency-check-maven:check -B || true
+          mvn org.owasp:dependency-check-maven:check -B \
+            -DnvdApiKey=$NVD_API_KEY \
+            -DfailBuildOnCVSS=8 \
+            -Dformats=HTML,JSON \
+            || true
         continue-on-error: true
 
       - name: Upload Dependency Check Report
@@ -116,7 +122,9 @@ jobs:
         if: always()
         with:
           name: dependency-check-report
-          path: target/dependency-check-report.html
+          path: |
+            target/dependency-check-report.html
+            target/dependency-check-report.json
           if-no-files-found: ignore
 
   # ============================================
