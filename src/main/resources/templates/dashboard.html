@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Student Management System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 24px; }
+        .user-info { display: flex; align-items: center; gap: 20px; }
+        .logout-btn { background: rgba(255,255,255,0.2); color: white; padding: 8px 20px; border: 1px solid white; border-radius: 5px; text-decoration: none; cursor: pointer; }
+        .logout-btn:hover { background: rgba(255,255,255,0.3); }
+        .logout-form { display: inline; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .welcome { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .welcome h2 { color: #333; margin-bottom: 10px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .menu-item { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; transition: transform 0.3s; }
+        .menu-item:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        .menu-item h3 { color: #667eea; margin-bottom: 15px; }
+        .menu-item a { display: inline-block; margin: 5px; padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; }
+        .menu-item a:hover { background: #5568d3; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Student Management System</h1>
+            <div class="user-info">
+                <span>Welcome, <strong th:text="${username}">User</strong></span>
+                <form th:action="@{/logout}" method="post" class="logout-form">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome">
+            <h2>Dashboard</h2>
+            <p>Welcome to the Student Management System. Select an option below to manage records.</p>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-item" sec:authorize="hasAnyRole('STUDENT', 'TEACHER', 'ADMIN')">
+                <h3>Students</h3>
+                <p>View and manage student records</p>
+                <a th:href="@{/student/list}">View Students</a>
+                <a th:href="@{/student/create}" sec:authorize="hasAnyRole('TEACHER', 'ADMIN')">Add Student</a>
+            </div>
+
+            <div class="menu-item" sec:authorize="hasAnyRole('TEACHER', 'ADMIN')">
+                <h3>Teachers</h3>
+                <p>View and manage teacher records</p>
+                <a th:href="@{/teacher/list}">View Teachers</a>
+                <a th:href="@{/teacher/create}" sec:authorize="hasRole('ADMIN')">Add Teacher</a>
+            </div>
+
+            <div class="menu-item" sec:authorize="hasAnyRole('TEACHER', 'ADMIN')">
+                <h3>Departments</h3>
+                <p>View and manage departments</p>
+                <a th:href="@{/department/list}">View Departments</a>
+                <a th:href="@{/department/create}" sec:authorize="hasRole('ADMIN')">Add Department</a>
+            </div>
+
+            <div class="menu-item" sec:authorize="hasAnyRole('TEACHER', 'ADMIN')">
+                <h3>Courses</h3>
+                <p>View and manage courses</p>
+                <a th:href="@{/course/list}">View Courses</a>
+                <a th:href="@{/course/create}">Add Course</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
