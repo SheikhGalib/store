@@ -1,6 +1,15 @@
 # Student Management System
+
+[![CI/CD Pipeline](https://github.com/SheikhGalib/store/actions/workflows/ci.yml/badge.svg)](https://github.com/SheikhGalib/store/actions/workflows/ci.yml)
+
+> **Version:** 1.0.1  
+> **Last Updated:** February 17, 2026  
+> **Branch Protection:** ✅ Enabled
+
 A comprehensive Student Management System built with Spring Boot, Spring Security, PostgreSQL, and Thymeleaf.
+
 CI/CD added
+
 ## Features
 
 ### Authentication & Authorization
