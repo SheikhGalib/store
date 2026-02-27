@@ -186,6 +186,7 @@ jobs:
           TO_WHATSAPP_NUMBER: ${{ secrets.TWILIO_TO_WHATSAPP_NO }}
           FROM_WHATSAPP_NUMBER: ${{ secrets.TWILIO_WHATSAPP_NUMBER }}
           TEXTMEBOT_API_KEY: ${{ secrets.TEXTMEBOT_API_KEY }}
+          WHATSAPP_GROUP_ID: ${{ secrets.WHATSAPP_GROUP_ID }}
         run: |
           # Formatting the WhatsApp Message
           MSG="🚀 *New PR Update in ${{ github.repository }}!*%0A"
@@ -202,9 +203,21 @@ jobs:
           --data-urlencode "Body=$MSG" \
           -u "$TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
 
+          # Use literal newlines (\n) or actual line breaks in the string
+          # Note: We use \n and then let printf format it, or just use a multi-line string
+          MSG1=$(printf "🚀 *New PR Update in ${{ github.repository }}!*\n\n")
+          MSG1+=$(printf "*Author:* ${{ github.actor }}\n")
+          MSG1+=$(printf "*Title:* ${{ github.event.pull_request.title }}\n")
+          MSG1+=$(printf "*Merge Conflicts:* ${{ steps.merge_check.outputs.mergeable == 'true' && '✅ None' || '❌ Conflicts Detected' }}\n")
+          MSG1+=$(printf "*Tests:* ✅ Passed\n")
+          MSG1+=$(printf "*Link:* ${{ github.event.pull_request.html_url }}")
+
+          # Sending in WhatsApp group
           # Send the GET request using curl
           # -G tells curl to send data as query parameters in a GET request
           curl -s -G "http://api.textmebot.com/send.php" \
-            --data-urlencode "recipient=$TO_WHATSAPP_NUMBER" \
+            --data-urlencode "recipient=$WHATSAPP_GROUP_ID" \
             --data-urlencode "apikey=$TEXTMEBOT_API_KEY" \
-            --data-urlencode "text=$MSG"
+            --data-urlencode "text=$MSG1"
+
+
