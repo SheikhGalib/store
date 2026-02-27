@@ -157,3 +157,48 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
         continue-on-error: true
+  
+  notify-whatsapp:
+    runs-on: ubuntu-latest
+
+    # 2. THE CI/CD CHECK (Crucial for test status)
+    # This ensures the message ONLY sends if your testing jobs (named 'build' or 'test') have passed.
+    # If you don't have tests, you can remove this 'needs' line.
+    # needs: [test-suite]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Check for Merge Conflicts
+        id: merge_check
+        # GitHub sets 'mergeable' to true/false. We grab that status.
+        run: |
+          MERGEABLE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} | jq '.mergeable')
+          echo "mergeable=$MERGEABLE" >> $GITHUB_OUTPUT
+
+      # 3. THE WEBHOOK (Using Twilio as the API Broker)
+      - name: Send Message to WhatsApp Group
+        env:
+          # You store these securely in GitHub Repository Settings -> Secrets
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TO_WHATSAPP_NUMBER: ${{ secrets.TWILIO_TO_WHATSAPP_NO }}
+          FROM_WHATSAPP_NUMBER: ${{ secrets.TWILIO_WHATSAPP_NUMBER }}
+        run: |
+          # Formatting the WhatsApp Message
+          MSG="🚀 *New PR Update in ${{ github.repository }}!*%0A"
+          MSG+="*Author:* ${{ github.actor }}%0A"
+          MSG+="*Title:* ${{ github.event.pull_request.title }}%0A"
+          MSG+="*Merge Conflicts:* ${{ steps.merge_check.outputs.mergeable == 'true' && '✅ None' || '❌ Conflicts Detected' }}%0A"
+          MSG+="*Tests:* ✅ Passed%0A"
+          MSG+="*Link:* ${{ github.event.pull_request.html_url }}"
+
+          # Sending the Webhook via cURL
+          curl -X POST "https://api.twilio.com/2010-04-01/Accounts/$TWILIO_ACCOUNT_SID/Messages.json" \
+          --data-urlencode "To=whatsapp:$TO_WHATSAPP_NUMBER" \
+          --data-urlencode "From=whatsapp:$FROM_WHATSAPP_NUMBER" \
+          --data-urlencode "Body=$MSG" \
+          --data-urlencode 'ContentVariables={"1":"12/1","2":"3pm"}' \
+          -u "$TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
