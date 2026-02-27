@@ -185,6 +185,7 @@ jobs:
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TO_WHATSAPP_NUMBER: ${{ secrets.TWILIO_TO_WHATSAPP_NO }}
           FROM_WHATSAPP_NUMBER: ${{ secrets.TWILIO_WHATSAPP_NUMBER }}
+          TEXTMEBOT_API_KEY: ${{ secrets.TEXTMEBOT_API_KEY }}
         run: |
           # Formatting the WhatsApp Message
           MSG="🚀 *New PR Update in ${{ github.repository }}!*%0A"
@@ -200,3 +201,10 @@ jobs:
           --data-urlencode "From=whatsapp:$FROM_WHATSAPP_NUMBER" \
           --data-urlencode "Body=$MSG" \
           -u "$TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+
+          # Send the GET request using curl
+          # -G tells curl to send data as query parameters in a GET request
+          curl -s -G "http://api.textmebot.com/send.php" \
+            --data-urlencode "recipient=$TO_WHATSAPP_NUMBER" \
+            --data-urlencode "apikey=$TEXTMEBOT_API_KEY" \
+            --data-urlencode "text=$MSG"
