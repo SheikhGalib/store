@@ -162,9 +162,10 @@ jobs:
     runs-on: ubuntu-latest
 
     # 2. THE CI/CD CHECK (Crucial for test status)
-    # This ensures the message ONLY sends if your testing jobs (named 'build' or 'test') have passed.
-    # If you don't have tests, you can remove this 'needs' line.
-    # needs: [test-suite]
+    # Fix 1: Ensure it only runs AFTER tests are finished and successful
+    needs: [build, code-quality]
+    # Fix 2: Restrict this job to only run for Pull Request events
+    if: github.event_name == 'pull_request'
 
     steps:
       - name: Checkout Code
@@ -200,5 +201,4 @@ jobs:
           --data-urlencode "To=whatsapp:$TO_WHATSAPP_NUMBER" \
           --data-urlencode "From=whatsapp:$FROM_WHATSAPP_NUMBER" \
           --data-urlencode "Body=$MSG" \
-          --data-urlencode 'ContentVariables={"1":"12/1","2":"3pm"}' \
           -u "$TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
