@@ -199,5 +199,4 @@ jobs:
           --data-urlencode "To=whatsapp:$TO_WHATSAPP_NUMBER" \
           --data-urlencode "From=whatsapp:$FROM_WHATSAPP_NUMBER" \
           --data-urlencode "Body=$MSG" \
-          --data-urlencode 'ContentVariables={"1":"12/1","2":"3pm"}' \
           -u "$TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
