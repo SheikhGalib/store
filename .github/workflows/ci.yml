@@ -162,9 +162,8 @@ jobs:
     runs-on: ubuntu-latest
 
     # 2. THE CI/CD CHECK (Crucial for test status)
-    # This ensures the message ONLY sends if your testing jobs (named 'build' or 'test') have passed.
-    # If you don't have tests, you can remove this 'needs' line.
-    # needs: [test-suite]
+    # Fix 1: Ensure it only runs AFTER tests are finished and successful
+    needs: [build, code-quality]
 
     steps:
       - name: Checkout Code
