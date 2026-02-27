@@ -4,7 +4,8 @@
 
 > **Version:** 1.0.1  
 > **Last Updated:** February 17, 2026  
-> **Branch Protection:** ✅ Enabled
+
+Security Valnarbility ci/cd job removed.
 
 A comprehensive Student Management System built with Spring Boot, Spring Security, PostgreSQL, and Thymeleaf.
 
