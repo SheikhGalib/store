@@ -6,7 +6,7 @@
 > **Last Updated:** February 17, 2026  
 
 Security Valnarbility ci/cd job removed.
-
+GitHub + Discord Webhook added. Testing
 A comprehensive Student Management System built with Spring Boot, Spring Security, PostgreSQL, and Thymeleaf.
 
 CI/CD added
